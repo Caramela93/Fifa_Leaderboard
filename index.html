@@ -37,12 +37,21 @@ nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 2rem
 .user-badge .role-user{color:var(--blue);font-weight:600}
 .btn-logout{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:color .2s}
 .btn-logout:hover{color:var(--red)}
-.save-indicator{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 10px;border-radius:6px;font-weight:600;transition:all .3s}
-.save-indicator.saved{color:var(--green);background:rgba(34,197,94,.1)}
-.save-indicator.unsaved{color:var(--amber);background:rgba(245,158,11,.1)}
-.save-indicator .si-dot{width:7px;height:7px;border-radius:50%}
-.save-indicator.saved .si-dot{background:var(--green)}
-.save-indicator.unsaved .si-dot{background:var(--amber)}
+.sync-badge{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:6px;font-weight:600}
+.sync-badge.live{color:var(--green);background:rgba(34,197,94,.1)}
+.sync-badge.syncing{color:var(--amber);background:rgba(245,158,11,.1)}
+.sync-badge.offline{color:var(--red);background:rgba(239,68,68,.1)}
+.sync-badge .sd{width:7px;height:7px;border-radius:50%}
+.sync-badge.live .sd{background:var(--green);animation:pulse 2s infinite}
+.sync-badge.syncing .sd{background:var(--amber)}
+.sync-badge.offline .sd{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* LOADING SCREEN */
+#loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999}
+.loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--muted)}
 
 /* TABS */
 .tabs{background:var(--navy2);border-bottom:1px solid var(--border)}
@@ -51,11 +60,9 @@ nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 2rem
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .tab:hover:not(.active){color:var(--text)}
 .tab svg{width:16px;height:16px;opacity:.75}
-.tab-locked{opacity:.4;cursor:not-allowed}
 
 /* PAGES */
-.page{display:none}
-.page.active{display:block}
+.page{display:none}.page.active{display:block}
 
 /* MAIN LAYOUT */
 .main{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start}
@@ -93,8 +100,7 @@ tbody td{padding:14px 20px;font-size:14px}
 .admin-header h3{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .admin-body{padding:16px;display:flex;flex-direction:column;gap:14px}
 .btn-big{border:none;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
-.btn-big-blue{background:var(--blue);color:#fff}
-.btn-big-blue:hover{background:var(--blue2)}
+.btn-big-blue{background:var(--blue);color:#fff}.btn-big-blue:hover{background:var(--blue2)}
 .admin-hint{font-size:12px;color:var(--muted);line-height:1.6}
 .admin-actions{display:flex;flex-direction:column;gap:10px}
 .admin-action{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:background .2s;background:none;width:100%;text-align:left}
@@ -105,13 +111,10 @@ tbody td{padding:14px 20px;font-size:14px}
 .action-icon.red{background:rgba(239,68,68,.15);color:var(--red)}
 .action-icon.purple{background:rgba(139,92,246,.15);color:var(--purple)}
 .action-icon.amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.action-icon.blue2{background:rgba(26,111,232,.15);color:#4a9eff}
 .action-text{display:flex;flex-direction:column;gap:3px}
 .action-label{font-size:13px;font-weight:600;color:var(--text)}
 .action-desc{font-size:11px;color:var(--muted);line-height:1.5}
-
-/* LOCKED PANEL */
-.locked-panel{padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
-.lock-icon{width:48px;height:48px;background:rgba(138,154,184,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 
 /* POINTS SYSTEM */
 .points-section{max-width:1100px;margin:0 auto;padding:0 2rem 2rem}
@@ -132,76 +135,31 @@ tbody td{padding:14px 20px;font-size:14px}
 .point-name{font-size:12px;font-weight:600;color:var(--text)}
 .point-sub{font-size:10px;color:var(--muted)}
 .point-pts{font-size:16px;font-weight:800;white-space:nowrap}
-.point-pts.green{color:var(--green)}
-.point-pts.blue{color:#4a9eff}
-.point-pts.gold{color:var(--gold)}
-.point-pts.red-c{color:var(--red)}
+.point-pts.green{color:var(--green)}.point-pts.blue{color:#4a9eff}
+.point-pts.gold{color:var(--gold)}.point-pts.red-c{color:var(--red)}
 
-/* HISTORY PAGE */
+/* HISTORY */
 .history-page{max-width:1100px;margin:0 auto;padding:2rem}
 .history-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;text-align:center}
 .history-log{display:flex;flex-direction:column;gap:10px}
 .log-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px}
 .log-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px}
-.log-dot.reset{background:var(--red)}
 .log-body{flex:1}
 .log-title{font-size:14px;font-weight:600;color:var(--text)}
 .log-meta{font-size:12px;color:var(--muted);margin-top:3px}
 .log-pts{font-size:15px;font-weight:700;color:var(--green);white-space:nowrap}
 .log-empty{text-align:center;padding:40px;color:var(--muted);font-size:14px}
 
-/* ABOUT PAGE */
+/* ABOUT */
 .about-page{max-width:700px;margin:0 auto;padding:2rem}
 .about-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px}
-.about-title{font-size:22px;font-weight:700;margin-bottom:8px}
-.about-sub{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:20px}
-.about-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
-.about-section h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
-
-/* FOOTER */
-footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
-.footer-players{position:absolute;bottom:0;display:flex;justify-content:space-between;width:100%;pointer-events:none}
-.footer-player{opacity:.18}
-.footer-logo{font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px}
-.footer-name{font-family:'Cairo',sans-serif;direction:rtl;font-size:15px;color:var(--gold);font-weight:600}
-.footer-sub{font-family:'Cairo',sans-serif;direction:rtl;font-size:12px;color:var(--muted)}
-
-/* MODALS */
-.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
-.modal-backdrop.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:420px;max-width:95vw;overflow:hidden}
-.modal-wide{width:560px}
-.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-head h3{font-size:15px;font-weight:700}
-.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1;transition:color .2s}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.modal-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.modal-field input,.modal-field select{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
-.modal-field input:focus,.modal-field select:focus{border-color:var(--blue)}
-.modal-field select option{background:var(--navy2)}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
-.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
-.btn-cancel:hover{background:var(--navy3);color:var(--text)}
-.btn-confirm{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
-.btn-confirm:hover{background:var(--blue2)}
-.btn-confirm.danger{background:var(--red)}
-.btn-confirm.danger:hover{background:#c53030}
-.error-msg{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);display:none}
-
-/* LOGIN TABS */
-.login-tabs{display:flex;border-bottom:1px solid var(--border);margin:-20px -20px 20px}
-.login-tab{flex:1;padding:12px;font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;color:var(--muted);border-bottom:2px solid transparent;font-family:inherit;transition:all .2s}
-.login-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(26,111,232,.06)}
 
 /* DETAIL MODAL */
 .detail-header{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px}
 .detail-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
 .detail-name{font-size:18px;font-weight:700}
-.detail-total{font-size:13px;color:var(--muted)}
 .detail-log{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
 .detail-log::-webkit-scrollbar{width:4px}
-.detail-log::-webkit-scrollbar-track{background:var(--navy2)}
 .detail-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .detail-entry{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--navy3);border-radius:8px;border:1px solid var(--border)}
 .detail-entry-icon{width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.15);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -211,6 +169,36 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 .detail-entry-time{font-size:11px;color:var(--muted);margin-top:2px}
 .detail-entry-pts{font-size:14px;font-weight:700;color:var(--green);white-space:nowrap}
 .detail-empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+
+/* MODALS */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:420px;max-width:95vw;overflow:hidden}
+.modal-wide{width:560px}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
+.modal-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.modal-field input,.modal-field select{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--blue)}
+.modal-field select option{background:var(--navy2)}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-confirm{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-confirm.danger{background:var(--red)}
+.error-msg{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);display:none}
+.login-tabs{display:flex;border-bottom:1px solid var(--border);margin:-20px -20px 20px}
+.login-tab{flex:1;padding:12px;font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;color:var(--muted);border-bottom:2px solid transparent;font-family:inherit;transition:all .2s}
+.login-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(26,111,232,.06)}
+
+/* FOOTER */
+footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
+.footer-players{position:absolute;bottom:0;display:flex;justify-content:space-between;width:100%;pointer-events:none}
+.footer-player{opacity:.18}
+.footer-logo{font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px}
+.footer-name{font-family:'Cairo',sans-serif;direction:rtl;font-size:15px;color:var(--gold);font-weight:600}
+.footer-sub{font-family:'Cairo',sans-serif;direction:rtl;font-size:12px;color:var(--muted)}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--navy2);border:1px solid var(--green);border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--green);z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
@@ -229,6 +217,20 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 </style>
 </head>
 <body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <svg width="50" height="50" viewBox="0 0 44 44" fill="none">
+    <circle cx="22" cy="22" r="20" fill="#f5a623" stroke="#e09010" stroke-width="1.5"/>
+    <polygon points="22,10 26,18 22,14 18,18" fill="#222" opacity=".8"/>
+    <polygon points="22,34 26,26 22,30 18,26" fill="#222" opacity=".8"/>
+    <polygon points="10,22 18,18 14,22 18,26" fill="#222" opacity=".8"/>
+    <polygon points="34,22 26,18 30,22 26,26" fill="#222" opacity=".8"/>
+    <circle cx="22" cy="22" r="5" fill="#111" opacity=".7"/>
+  </svg>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Connecting to Firebase…</div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -253,6 +255,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
     <span class="sub">– Shbab Bla Hadf</span>
   </div>
   <div class="nav-actions" id="nav-actions">
+    <div class="sync-badge live" id="sync-badge"><div class="sd"></div>Live</div>
     <button class="btn-nav" onclick="openModal('login')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Admin
@@ -272,7 +275,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       Details
     </button>
-    <button class="tab" id="history-tab-btn" onclick="handleHistoryTab(this)">
+    <button class="tab" id="history-tab-btn" onclick="switchPage('history',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
       History
     </button>
@@ -286,84 +289,60 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <!-- PAGE: LEADERBOARD -->
 <div class="page active" id="page-leaderboard">
   <div class="main">
-    <!-- Leaderboard table -->
     <div class="card">
       <div class="card-header">
         <div class="accent"></div>
         <h2>Leaderboard</h2>
+        <span style="margin-left:auto;font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block"></span>
+          Live
+        </span>
       </div>
       <table>
-        <thead>
-          <tr>
-            <th style="width:56px">#</th>
-            <th>Player</th>
-            <th class="right" style="width:100px">Points</th>
-            <th class="right" style="width:145px">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard-body"></tbody>
+        <thead><tr>
+          <th style="width:56px">#</th><th>Player</th>
+          <th class="right" style="width:100px">Points</th>
+          <th class="right" style="width:145px">Actions</th>
+        </tr></thead>
+        <tbody id="leaderboard-body"><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--muted)">Loading…</td></tr></tbody>
       </table>
     </div>
 
-    <!-- Admin sidebar -->
-    <div class="admin-card" id="admin-sidebar">
+    <!-- ADMIN SIDEBAR -->
+    <div class="admin-card">
       <div class="admin-header">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         <h3>Admin Panel</h3>
       </div>
-      <!-- Logged-out state -->
+      <!-- LOCKED -->
       <div class="admin-body" id="admin-locked">
         <button class="btn-big btn-big-blue" onclick="openModal('login')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
           Login
         </button>
         <p class="admin-hint">Login as admin to add prediction points and manage the system.</p>
-        <div class="admin-actions">
-          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
-            <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
-            <div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Add prediction points for any player</span></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
-            <div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
-            <div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
-            <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-            <div class="action-text"><span class="action-label">Export Data</span><span class="action-desc">Download data backup (JSON)</span></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
-            <div class="action-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
-            <div class="action-text"><span class="action-label">History</span><span class="action-desc">View all changes and logs</span></div>
-          </div>
+        <div class="admin-actions" style="opacity:.35;pointer-events:none">
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px"><div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Add prediction points for any player</span></div></div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px"><div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div><div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div></div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px"><div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="action-text"><span class="action-label">Export Data</span><span class="action-desc">Download data backup (JSON)</span></div></div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px"><div class="action-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div><div class="action-text"><span class="action-label">History</span><span class="action-desc">View all changes and logs</span></div></div>
         </div>
       </div>
-      <!-- Admin logged-in state -->
+      <!-- UNLOCKED -->
       <div class="admin-body" id="admin-unlocked" style="display:none">
         <div style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <div>
-            <div style="font-size:12px;font-weight:700;color:var(--gold)">Admin Access</div>
-            <div style="font-size:11px;color:var(--muted)">Full control enabled</div>
-          </div>
+          <div><div style="font-size:12px;font-weight:700;color:var(--gold)">Admin Access</div><div style="font-size:11px;color:var(--muted)">Changes sync live to all users</div></div>
         </div>
         <div class="admin-actions">
           <button class="admin-action" onclick="openModal('addPoints')">
             <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
-            <div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Add prediction points for any player</span></div>
+            <div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Syncs live to all players instantly</span></div>
           </button>
           <button class="admin-action" onclick="openModal('resetSeason')">
             <div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
             <div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div>
           </button>
-          <button class="admin-action" onclick="savePoints()" id="save-btn">
-            <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div>
-            <div class="action-text"><span class="action-label">Save Points</span><span class="action-desc">Save current data to browser &amp; download file</span></div>
-          </button>
-          <button class="admin-action" onclick="document.getElementById('load-file-input').click()">
-            <div class="action-icon blue" style="background:rgba(26,111,232,.15);color:#4a9eff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-            <div class="action-text"><span class="action-label">Load Save File</span><span class="action-desc">Restore from a fifa_data.json file</span></div>
-          </button>
-          <input type="file" id="load-file-input" accept=".json" style="display:none" onchange="loadFromFile(event)"/>
           <button class="admin-action" onclick="exportData()">
             <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
             <div class="action-text"><span class="action-label">Export Backup</span><span class="action-desc">Download full data backup (JSON)</span></div>
@@ -399,7 +378,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
   </div>
 </div>
 
-<!-- PAGE: DETAILS TAB -->
+<!-- PAGE: DETAILS -->
 <div class="page" id="page-details-tab">
   <div style="max-width:1100px;margin:0 auto;padding:2rem">
     <div class="card">
@@ -413,11 +392,11 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <div class="page" id="page-history">
   <div class="history-page">
     <div id="history-locked-view" class="history-locked">
-      <div class="lock-icon" style="width:64px;height:64px">
+      <div style="width:64px;height:64px;background:rgba(138,154,184,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted)">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       </div>
       <div style="font-size:16px;font-weight:600">History is Admin Only</div>
-      <div style="font-size:13px;color:var(--muted);max-width:280px">Please login as admin to view the full history of points and changes.</div>
+      <div style="font-size:13px;color:var(--muted);max-width:280px">Login as admin to view the full history of points and changes.</div>
       <button class="btn-nav-blue" onclick="openModal('login')" style="padding:10px 24px;font-size:14px">Login as Admin</button>
     </div>
     <div id="history-admin-view" style="display:none">
@@ -435,15 +414,15 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <div class="page" id="page-about">
   <div class="about-page">
     <div class="about-card">
-      <div class="about-title">اتحاد كلية تجارة</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:8px">اتحاد كلية تجارة</div>
       <div style="font-size:16px;color:var(--blue);font-weight:600;margin-bottom:10px">Shbab Bla Hadf — Prediction League</div>
-      <div class="about-sub">A FIFA prediction competition among friends. Earn points by correctly predicting match outcomes, scores, and goalscorers across rounds.</div>
-      <div class="about-section">
-        <h4>Players</h4>
+      <div style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:20px">A FIFA prediction competition among friends. Points sync live via Firebase — everyone sees updates instantly.</div>
+      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px">Players</div>
         <div id="about-players" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
-      <div class="about-section">
-        <h4>Built by</h4>
+      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px">Built by</div>
         <div style="font-family:'Cairo',sans-serif;direction:rtl;font-size:15px;color:var(--gold)">احمد الديسوقى &lt;/&gt;</div>
       </div>
     </div>
@@ -458,18 +437,13 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
   </div>
   <div class="footer-logo">FIFA</div>
   <div class="footer-name">Shbab Bla Hadf — اتحاد كلية تجارة</div>
-  <div class="footer-sub">Coded by Ahmed Eldesouky &lt;/&gt;</div>
+  <div class="footer-sub">كودد بى احمد الديسوقى &lt;/&gt;</div>
 </footer>
-
-<!-- ===== MODALS ===== -->
 
 <!-- LOGIN MODAL -->
 <div class="modal-backdrop" id="modal-login">
   <div class="modal">
-    <div class="modal-head">
-      <h3 id="login-modal-title">Login</h3>
-      <button class="modal-close" onclick="closeModal('login')">&times;</button>
-    </div>
+    <div class="modal-head"><h3>Login</h3><button class="modal-close" onclick="closeModal('login')">&times;</button></div>
     <div class="modal-body">
       <div class="login-tabs">
         <button class="login-tab active" id="ltab-admin" onclick="switchLoginTab('admin')">🔐 Admin</button>
@@ -489,10 +463,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <!-- ADD POINTS MODAL -->
 <div class="modal-backdrop" id="modal-addPoints">
   <div class="modal">
-    <div class="modal-head">
-      <h3>Add Points</h3>
-      <button class="modal-close" onclick="closeModal('addPoints')">&times;</button>
-    </div>
+    <div class="modal-head"><h3>Add Points</h3><button class="modal-close" onclick="closeModal('addPoints')">&times;</button></div>
     <div class="modal-body">
       <div class="modal-field">
         <label>Player</label>
@@ -511,11 +482,11 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
   </div>
 </div>
 
-<!-- RESET SEASON MODAL -->
+<!-- RESET MODAL -->
 <div class="modal-backdrop" id="modal-resetSeason">
   <div class="modal">
     <div class="modal-head"><h3>Reset Season</h3><button class="modal-close" onclick="closeModal('resetSeason')">&times;</button></div>
-    <div class="modal-body"><p style="font-size:14px;color:var(--muted);line-height:1.7">This will reset all player points to 0 and start a new season. All history will be cleared. This action cannot be undone.</p></div>
+    <div class="modal-body"><p style="font-size:14px;color:var(--muted);line-height:1.7">This will reset ALL player points to 0 and clear all history. This syncs live for everyone and cannot be undone.</p></div>
     <div class="modal-foot">
       <button class="btn-cancel" onclick="closeModal('resetSeason')">Cancel</button>
       <button class="btn-confirm danger" onclick="resetSeason()">Reset All Points</button>
@@ -526,10 +497,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <!-- VIEW DETAILS MODAL -->
 <div class="modal-backdrop" id="modal-viewDetails">
   <div class="modal modal-wide">
-    <div class="modal-head">
-      <h3>Player Details</h3>
-      <button class="modal-close" onclick="closeModal('viewDetails')">&times;</button>
-    </div>
+    <div class="modal-head"><h3>Player Details</h3><button class="modal-close" onclick="closeModal('viewDetails')">&times;</button></div>
     <div class="modal-body">
       <div class="detail-header" id="detail-header"></div>
       <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Points History</div>
@@ -539,72 +507,40 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-// ── STATE ──
-const ADMIN_CREDS = { username: 'Ahmed', password: 'AdminAhmed' };
-const LS_KEY = 'fifa_shbab_data_v1';
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const PLAYER_COLORS = {
-  Ahmed:'#1a6fe8', Omar:'#22c55e', Belal:'#f5a623',
-  Vini:'#8b5cf6', Body:'#ef4444', Migo:'#14b8a6', Mo:'#f59e0b'
+// ── FIREBASE CONFIG ──
+const firebaseConfig = {
+  apiKey: "AIzaSyD7RSwNzIc-v-xS0Wg5B58XOlbZBV4yZjY",
+  authDomain: "fifa-leaderboard-5faa8.firebaseapp.com",
+  databaseURL: "https://fifa-leaderboard-5faa8-default-rtdb.firebaseio.com",
+  projectId: "fifa-leaderboard-5faa8",
+  storageBucket: "fifa-leaderboard-5faa8.firebasestorage.app",
+  messagingSenderId: "674532101726",
+  appId: "1:674532101726:web:c83e4ca692205576712ecf"
 };
 
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ── CONSTANTS ──
+const ADMIN_CREDS = { username: 'Ahmed', password: 'AdminAhmed' };
+const PLAYER_NAMES = ['Ahmed','Omar','Belal','Vini','Body','Migo','Mo'];
+const PLAYER_COLORS = {
+  Ahmed:'#1a6fe8',Omar:'#22c55e',Belal:'#f5a623',
+  Vini:'#8b5cf6',Body:'#ef4444',Migo:'#14b8a6',Mo:'#f59e0b'
+};
+
+// ── STATE ──
 let currentUser = null;
 let loginMode = 'admin';
-let hasUnsaved = false;
-
-const DEFAULT_PLAYERS = [
-  { name:'Ahmed', points:0, history:[] },
-  { name:'Omar',  points:0, history:[] },
-  { name:'Belal', points:0, history:[] },
-  { name:'Vini',  points:0, history:[] },
-  { name:'Body',  points:0, history:[] },
-  { name:'Migo',  points:0, history:[] },
-  { name:'Mo',    points:0, history:[] },
-];
-
-let players = JSON.parse(JSON.stringify(DEFAULT_PLAYERS));
+let players = PLAYER_NAMES.map(n=>({name:n,points:0,history:[]}));
 let globalHistory = [];
-
-// ── PERSISTENCE: localStorage ──
-function loadFromStorage(){
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return;
-    const saved = JSON.parse(raw);
-    if(saved.players) players = saved.players;
-    if(saved.globalHistory) globalHistory = saved.globalHistory;
-  } catch(e){ console.warn('Could not load saved data', e); }
-}
-
-function saveToStorage(){
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify({ players, globalHistory, savedAt: Date.now() }));
-  } catch(e){ console.warn('Could not save to localStorage', e); }
-}
-
-function markUnsaved(){
-  hasUnsaved = true;
-  updateSaveIndicator();
-}
-function markSaved(){
-  hasUnsaved = false;
-  updateSaveIndicator();
-}
-function updateSaveIndicator(){
-  const el = document.getElementById('save-indicator');
-  if(!el) return;
-  if(hasUnsaved){
-    el.className='save-indicator unsaved';
-    el.innerHTML='<div class="si-dot"></div>Unsaved changes';
-  } else {
-    el.className='save-indicator saved';
-    el.innerHTML='<div class="si-dot"></div>All saved';
-  }
-}
 
 // ── UTILS ──
 function formatTime(ts){
@@ -612,110 +548,139 @@ function formatTime(ts){
   return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
     +' · '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
-
-function showToast(msg, isError=false){
+function showToast(msg,isError=false){
   const t=document.getElementById('toast');
   t.textContent=msg; t.className='toast'+(isError?' error':'');
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+function setSyncBadge(state){
+  const b=document.getElementById('sync-badge');
+  if(!b) return;
+  const labels={live:'Live',syncing:'Syncing…',offline:'Offline'};
+  b.className='sync-badge '+state;
+  b.innerHTML=`<div class="sd"></div>${labels[state]||'Live'}`;
+}
+
+// ── FIREBASE LISTENERS ──
+// Listen to players in real time
+onValue(ref(db,'players'), snap=>{
+  const data = snap.val();
+  if(data){
+    players = PLAYER_NAMES.map(n=>{
+      const d = data[n] || {};
+      return {
+        name: n,
+        points: d.points || 0,
+        history: d.history ? Object.values(d.history) : []
+      };
+    });
+  } else {
+    // First time — initialize in Firebase
+    players = PLAYER_NAMES.map(n=>({name:n,points:0,history:[]}));
+    const init = {};
+    PLAYER_NAMES.forEach(n=>{ init[n]={points:0}; });
+    set(ref(db,'players'), init);
+  }
+  document.getElementById('loading-screen').style.display='none';
+  setSyncBadge('live');
+  renderLeaderboard();
+  renderDetailsTab();
+  renderAbout();
+});
+
+// Listen to global history in real time
+onValue(ref(db,'globalHistory'), snap=>{
+  const data = snap.val();
+  globalHistory = data ? Object.values(data).sort((a,b)=>a.time-b.time) : [];
+  renderHistory();
+});
+
+// ── WRITE TO FIREBASE ──
+async function fbSetPlayer(name, points, history){
+  setSyncBadge('syncing');
+  await set(ref(db,`players/${name}`), { points, history: history.reduce((acc,h,i)=>{acc[i]=h;return acc;},{}) });
+  setSyncBadge('live');
+}
+async function fbPushHistory(entry){
+  await push(ref(db,'globalHistory'), entry);
+}
+async function fbResetAll(){
+  setSyncBadge('syncing');
+  const resetData = {};
+  PLAYER_NAMES.forEach(n=>{ resetData[n]={points:0}; });
+  await set(ref(db,'players'), resetData);
+  await set(ref(db,'globalHistory'), null);
+  setSyncBadge('live');
+}
 
 // ── PAGES ──
-function switchPage(id, el){
+function switchPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(el) el.classList.add('active');
-  if(id==='details-tab') renderDetailsTab();
   if(id==='history') renderHistory();
-  if(id==='about') renderAbout();
 }
-
-function handleHistoryTab(el){
-  if(!currentUser || currentUser.role!=='admin'){
-    switchPage('history', el);
-    return;
-  }
-  switchPage('history', el);
-}
+window.switchPage = switchPage;
 
 // ── AUTH ──
 function switchLoginTab(mode){
   loginMode=mode;
-  document.getElementById('ltab-admin').classList.toggle('active', mode==='admin');
-  document.getElementById('ltab-user').classList.toggle('active', mode==='user');
-  document.getElementById('login-user-label').textContent = mode==='admin' ? 'Admin Username' : 'Your Name (select)';
-  document.getElementById('login-username').placeholder = mode==='admin' ? 'Enter admin username' : 'Your player name';
+  document.getElementById('ltab-admin').classList.toggle('active',mode==='admin');
+  document.getElementById('ltab-user').classList.toggle('active',mode==='user');
+  document.getElementById('login-user-label').textContent=mode==='admin'?'Admin Username':'Your Player Name';
+  document.getElementById('login-username').placeholder=mode==='admin'?'Enter admin username':'Enter your player name';
   document.getElementById('login-error').style.display='none';
-  if(mode==='user'){
-    // replace text input with select for user mode
-    const inp=document.getElementById('login-username');
-    inp.value='';
-    inp.placeholder='Enter your player name';
-  }
 }
+window.switchLoginTab = switchLoginTab;
 
 function doLogin(){
   const username=document.getElementById('login-username').value.trim();
   const password=document.getElementById('login-password').value;
   const errEl=document.getElementById('login-error');
   errEl.style.display='none';
-
   if(loginMode==='admin'){
     if(username===ADMIN_CREDS.username && password===ADMIN_CREDS.password){
       currentUser={name:'Ahmed',role:'admin'};
-      applyAuthState();
-      closeModal('login');
+      applyAuthState(); closeModal('login');
       showToast('✅ Logged in as Admin');
       document.getElementById('login-username').value='';
       document.getElementById('login-password').value='';
-    } else {
-      errEl.style.display='block';
-    }
+    } else { errEl.style.display='block'; }
   } else {
-    // User login: just needs a valid player name + any password (for demo)
     const p=players.find(x=>x.name.toLowerCase()===username.toLowerCase());
     if(p && password.length>0){
       currentUser={name:p.name,role:'user'};
-      applyAuthState();
-      closeModal('login');
+      applyAuthState(); closeModal('login');
       showToast('✅ Logged in as '+p.name);
       document.getElementById('login-username').value='';
       document.getElementById('login-password').value='';
     } else {
-      errEl.textContent = p ? 'Please enter a password.' : 'Player not found. Check your name.';
+      errEl.textContent=p?'Please enter a password.':'Player not found. Check your name.';
       errEl.style.display='block';
     }
   }
 }
+window.doLogin = doLogin;
 
-function logout(){
-  currentUser=null;
-  applyAuthState();
-  showToast('Logged out');
-}
+function logout(){ currentUser=null; applyAuthState(); showToast('Logged out'); }
+window.logout = logout;
 
 function applyAuthState(){
   const na=document.getElementById('nav-actions');
+  const syncBadge=`<div class="sync-badge live" id="sync-badge"><div class="sd"></div>Live</div>`;
   if(!currentUser){
-    na.innerHTML=`
-      <button class="btn-nav" onclick="openModal('login')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Admin
-      </button>
+    na.innerHTML=`${syncBadge}
+      <button class="btn-nav" onclick="openModal('login')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Admin</button>
       <button class="btn-nav-blue" onclick="openModal('login')">Login</button>`;
     document.getElementById('admin-locked').style.display='flex';
     document.getElementById('admin-unlocked').style.display='none';
   } else {
-    const roleLabel = currentUser.role==='admin'
-      ? `<span class="role-admin">⭐ Admin</span>`
-      : `<span class="role-user">${currentUser.name}</span>`;
-    const saveInd = currentUser.role==='admin'
-      ? `<div class="save-indicator saved" id="save-indicator"><div class="si-dot"></div>All saved</div>`
-      : '';
-    na.innerHTML=`
-      <div class="user-badge"><div class="dot"></div>${roleLabel}<button class="btn-logout" onclick="logout()">Logout</button></div>
-      ${saveInd}`;
+    const roleLabel=currentUser.role==='admin'
+      ?`<span class="role-admin">⭐ Admin</span>`
+      :`<span class="role-user">${currentUser.name}</span>`;
+    na.innerHTML=`${syncBadge}<div class="user-badge"><div class="dot"></div>${roleLabel}<button class="btn-logout" onclick="logout()">Logout</button></div>`;
     if(currentUser.role==='admin'){
       document.getElementById('admin-locked').style.display='none';
       document.getElementById('admin-unlocked').style.display='flex';
@@ -725,17 +690,15 @@ function applyAuthState(){
     }
   }
   renderHistory();
-  renderLeaderboard();
 }
 
-// ── LOGIN MODAL ──
+// ── MODALS ──
 function openModal(id){ document.getElementById('modal-'+id).classList.add('open'); }
 function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
-
+window.openModal=openModal; window.closeModal=closeModal;
 document.querySelectorAll('.modal-backdrop').forEach(el=>{
   el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('open'); });
 });
-
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'){
     if(document.getElementById('modal-login').classList.contains('open')) doLogin();
@@ -746,18 +709,13 @@ document.addEventListener('keydown',e=>{
 // ── LEADERBOARD ──
 function rankClass(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; }
 function rankEmoji(i){ return i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1); }
-
 function renderLeaderboard(){
   const sorted=[...players].sort((a,b)=>b.points-a.points);
   document.getElementById('leaderboard-body').innerHTML=sorted.map((p,i)=>{
     const rc=rankClass(i);
-    const badge=i<3
-      ?`<span style="font-size:20px">${rankEmoji(i)}</span>`
-      :`<span>${i+1}</span>`;
+    const badge=i<3?`<span style="font-size:20px">${rankEmoji(i)}</span>`:`<span>${i+1}</span>`;
     return `<tr>
-      <td class="rank-cell" style="padding:14px 10px 14px 20px">
-        <div class="rank-badge ${rc}">${badge}</div>
-      </td>
+      <td class="rank-cell" style="padding:14px 10px 14px 20px"><div class="rank-badge ${rc}">${badge}</div></td>
       <td class="player-name">${p.name}</td>
       <td class="pts-cell">${p.points}</td>
       <td class="action-cell">
@@ -772,25 +730,19 @@ function renderLeaderboard(){
 
 // ── VIEW DETAILS ──
 function openDetails(name){
-  const p=players.find(x=>x.name===name);
-  if(!p) return;
+  const p=players.find(x=>x.name===name); if(!p) return;
   const color=PLAYER_COLORS[name]||'#1a6fe8';
   const initials=name.substring(0,2).toUpperCase();
   document.getElementById('detail-header').innerHTML=`
     <div class="detail-avatar" style="background:${color}22;color:${color};border:2px solid ${color}44">${initials}</div>
-    <div>
-      <div class="detail-name">${name}</div>
-      <div class="detail-total" style="color:${color}">Total Points: <strong>${p.points}</strong></div>
-    </div>`;
+    <div><div class="detail-name">${name}</div><div style="font-size:13px;color:${color}">Total Points: <strong>${p.points}</strong></div></div>`;
   const log=document.getElementById('detail-log');
   if(!p.history.length){
     log.innerHTML='<div class="detail-empty">No points recorded yet for '+name+'.</div>';
   } else {
     log.innerHTML=[...p.history].reverse().map(h=>`
       <div class="detail-entry">
-        <div class="detail-entry-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-        </div>
+        <div class="detail-entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
         <div class="detail-entry-body">
           <div class="detail-entry-reason">${h.reason||'Points added by admin'}</div>
           <div class="detail-entry-time">${formatTime(h.time)}</div>
@@ -800,93 +752,42 @@ function openDetails(name){
   }
   openModal('viewDetails');
 }
+window.openDetails=openDetails;
 
 // ── ADD POINTS ──
-function addPoints(){
-  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+async function addPoints(){
+  if(!currentUser||currentUser.role!=='admin'){ showToast('Admin only',true); return; }
   const name=document.getElementById('modal-player-select').value;
   const pts=parseInt(document.getElementById('modal-pts-input').value)||0;
   const reason=document.getElementById('modal-reason-input').value.trim()||'Points added by admin';
   if(pts<=0){ showToast('Enter a valid point value',true); return; }
-  const p=players.find(x=>x.name===name);
-  if(!p) return;
-  p.points+=pts;
+  const p=players.find(x=>x.name===name); if(!p) return;
   const entry={player:name,pts,reason,time:Date.now()};
-  p.history.push(entry);
-  globalHistory.push(entry);
-  saveToStorage(); // auto-save to browser
-  markUnsaved();   // still prompt to save file too
-  renderLeaderboard();
-  renderHistory();
-  renderDetailsTab();
+  const newPoints=p.points+pts;
+  const newHistory=[...p.history,entry];
   closeModal('addPoints');
   document.getElementById('modal-pts-input').value='';
   document.getElementById('modal-reason-input').value='';
-  showToast(`✅ +${pts} pts added to ${name} — click Save Points to download`);
+  showToast(`⏳ Saving +${pts} pts for ${name}…`);
+  await fbSetPlayer(name,newPoints,newHistory);
+  await fbPushHistory(entry);
+  showToast(`✅ +${pts} pts added to ${name} — synced live!`);
 }
+window.addPoints=addPoints;
 
 // ── RESET SEASON ──
-function resetSeason(){
-  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
-  players.forEach(p=>{ p.points=0; p.history=[]; });
-  globalHistory=[];
-  saveToStorage();
-  markSaved();
-  renderLeaderboard();
-  renderHistory();
-  renderDetailsTab();
+async function resetSeason(){
+  if(!currentUser||currentUser.role!=='admin'){ showToast('Admin only',true); return; }
   closeModal('resetSeason');
-  showToast('Season reset — all points cleared');
+  showToast('⏳ Resetting season…');
+  await fbResetAll();
+  showToast('Season reset — all points cleared for everyone');
 }
+window.resetSeason=resetSeason;
 
-// ── SAVE POINTS (explicit admin save) ──
-function savePoints(){
-  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
-  // 1. Save to localStorage
-  saveToStorage();
-  markSaved();
-  // 2. Also download a .json file as a physical backup
-  const data = JSON.stringify({ players, globalHistory, savedAt: new Date().toISOString() }, null, 2);
-  const a = document.createElement('a');
-  a.href = 'data:application/json,' + encodeURIComponent(data);
-  a.download = 'fifa_data.json';
-  a.click();
-  showToast('✅ Points saved! fifa_data.json downloaded.');
-  // Update save button visual
-  const btn = document.getElementById('save-btn');
-  if(btn){ btn.style.borderColor='var(--green)'; setTimeout(()=>btn.style.borderColor='',2000); }
-}
-
-// ── LOAD FROM FILE ──
-function loadFromFile(event){
-  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      const data = JSON.parse(e.target.result);
-      if(!data.players) throw new Error('Invalid file');
-      players = data.players;
-      globalHistory = data.globalHistory || [];
-      saveToStorage();
-      markSaved();
-      renderLeaderboard();
-      renderHistory();
-      renderDetailsTab();
-      renderAbout();
-      showToast('✅ Data loaded from file!');
-    } catch(err){
-      showToast('❌ Invalid save file', true);
-    }
-    event.target.value = '';
-  };
-  reader.readAsText(file);
-}
-
-// ── EXPORT BACKUP ──
+// ── EXPORT ──
 function exportData(){
-  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  if(!currentUser||currentUser.role!=='admin'){ showToast('Admin only',true); return; }
   const data=JSON.stringify({players,globalHistory,exportedAt:new Date().toISOString()},null,2);
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(data);
@@ -894,12 +795,13 @@ function exportData(){
   a.click();
   showToast('Backup exported');
 }
+window.exportData=exportData;
 
-// ── HISTORY PAGE ──
+// ── HISTORY ──
 function renderHistory(){
   const locked=document.getElementById('history-locked-view');
   const adminV=document.getElementById('history-admin-view');
-  if(!currentUser || currentUser.role!=='admin'){
+  if(!currentUser||currentUser.role!=='admin'){
     locked.style.display='flex'; adminV.style.display='none'; return;
   }
   locked.style.display='none'; adminV.style.display='block';
@@ -926,7 +828,6 @@ function renderDetailsTab(){
   body.innerHTML=sorted.map((p,i)=>{
     const color=PLAYER_COLORS[p.name]||'#1a6fe8';
     const initials=p.name.substring(0,2).toUpperCase();
-    const rc=rankClass(i);
     const medal=i<3?rankEmoji(i):'';
     const lastEntry=p.history.length?p.history[p.history.length-1]:null;
     return `<div style="background:var(--navy3);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .2s" onclick="openDetails('${p.name}')" onmouseover="this.style.borderColor='${color}55'" onmouseout="this.style.borderColor='var(--border)'">
@@ -954,11 +855,6 @@ function renderAbout(){
   }).join('');
 }
 
-// ── INIT ──
-loadFromStorage(); // restore saved data from browser
-renderLeaderboard();
-renderDetailsTab();
-renderAbout();
 </script>
 </body>
 </html>
