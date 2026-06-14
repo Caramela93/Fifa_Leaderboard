@@ -37,6 +37,12 @@ nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 2rem
 .user-badge .role-user{color:var(--blue);font-weight:600}
 .btn-logout{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:color .2s}
 .btn-logout:hover{color:var(--red)}
+.save-indicator{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 10px;border-radius:6px;font-weight:600;transition:all .3s}
+.save-indicator.saved{color:var(--green);background:rgba(34,197,94,.1)}
+.save-indicator.unsaved{color:var(--amber);background:rgba(245,158,11,.1)}
+.save-indicator .si-dot{width:7px;height:7px;border-radius:50%}
+.save-indicator.saved .si-dot{background:var(--green)}
+.save-indicator.unsaved .si-dot{background:var(--amber)}
 
 /* TABS */
 .tabs{background:var(--navy2);border-bottom:1px solid var(--border)}
@@ -349,9 +355,18 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
             <div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
             <div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div>
           </button>
+          <button class="admin-action" onclick="savePoints()" id="save-btn">
+            <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div>
+            <div class="action-text"><span class="action-label">Save Points</span><span class="action-desc">Save current data to browser &amp; download file</span></div>
+          </button>
+          <button class="admin-action" onclick="document.getElementById('load-file-input').click()">
+            <div class="action-icon blue" style="background:rgba(26,111,232,.15);color:#4a9eff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="action-text"><span class="action-label">Load Save File</span><span class="action-desc">Restore from a fifa_data.json file</span></div>
+          </button>
+          <input type="file" id="load-file-input" accept=".json" style="display:none" onchange="loadFromFile(event)"/>
           <button class="admin-action" onclick="exportData()">
             <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-            <div class="action-text"><span class="action-label">Export Data</span><span class="action-desc">Download data backup (JSON)</span></div>
+            <div class="action-text"><span class="action-label">Export Backup</span><span class="action-desc">Download full data backup (JSON)</span></div>
           </button>
           <button class="admin-action" onclick="switchPage('history',document.getElementById('history-tab-btn'))">
             <div class="action-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
@@ -443,7 +458,7 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
   </div>
   <div class="footer-logo">FIFA</div>
   <div class="footer-name">Shbab Bla Hadf — اتحاد كلية تجارة</div>
-  <div class="footer-sub">Coded by Ahmed Eldesouky &lt;/&gt;</div>
+  <div class="footer-sub">كودد بى احمد الديسوقى &lt;/&gt;</div>
 </footer>
 
 <!-- ===== MODALS ===== -->
@@ -530,16 +545,18 @@ footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem
 <script>
 // ── STATE ──
 const ADMIN_CREDS = { username: 'Ahmed', password: 'AdminAhmed' };
+const LS_KEY = 'fifa_shbab_data_v1';
 
 const PLAYER_COLORS = {
   Ahmed:'#1a6fe8', Omar:'#22c55e', Belal:'#f5a623',
   Vini:'#8b5cf6', Body:'#ef4444', Migo:'#14b8a6', Mo:'#f59e0b'
 };
 
-let currentUser = null; // null | { name, role: 'admin'|'user' }
+let currentUser = null;
 let loginMode = 'admin';
+let hasUnsaved = false;
 
-let players = [
+const DEFAULT_PLAYERS = [
   { name:'Ahmed', points:0, history:[] },
   { name:'Omar',  points:0, history:[] },
   { name:'Belal', points:0, history:[] },
@@ -549,7 +566,45 @@ let players = [
   { name:'Mo',    points:0, history:[] },
 ];
 
-let globalHistory = []; // { player, pts, reason, time }
+let players = JSON.parse(JSON.stringify(DEFAULT_PLAYERS));
+let globalHistory = [];
+
+// ── PERSISTENCE: localStorage ──
+function loadFromStorage(){
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const saved = JSON.parse(raw);
+    if(saved.players) players = saved.players;
+    if(saved.globalHistory) globalHistory = saved.globalHistory;
+  } catch(e){ console.warn('Could not load saved data', e); }
+}
+
+function saveToStorage(){
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({ players, globalHistory, savedAt: Date.now() }));
+  } catch(e){ console.warn('Could not save to localStorage', e); }
+}
+
+function markUnsaved(){
+  hasUnsaved = true;
+  updateSaveIndicator();
+}
+function markSaved(){
+  hasUnsaved = false;
+  updateSaveIndicator();
+}
+function updateSaveIndicator(){
+  const el = document.getElementById('save-indicator');
+  if(!el) return;
+  if(hasUnsaved){
+    el.className='save-indicator unsaved';
+    el.innerHTML='<div class="si-dot"></div>Unsaved changes';
+  } else {
+    el.className='save-indicator saved';
+    el.innerHTML='<div class="si-dot"></div>All saved';
+  }
+}
 
 // ── UTILS ──
 function formatTime(ts){
@@ -655,8 +710,12 @@ function applyAuthState(){
     const roleLabel = currentUser.role==='admin'
       ? `<span class="role-admin">⭐ Admin</span>`
       : `<span class="role-user">${currentUser.name}</span>`;
+    const saveInd = currentUser.role==='admin'
+      ? `<div class="save-indicator saved" id="save-indicator"><div class="si-dot"></div>All saved</div>`
+      : '';
     na.innerHTML=`
-      <div class="user-badge"><div class="dot"></div>${roleLabel}<button class="btn-logout" onclick="logout()">Logout</button></div>`;
+      <div class="user-badge"><div class="dot"></div>${roleLabel}<button class="btn-logout" onclick="logout()">Logout</button></div>
+      ${saveInd}`;
     if(currentUser.role==='admin'){
       document.getElementById('admin-locked').style.display='none';
       document.getElementById('admin-unlocked').style.display='flex';
@@ -755,13 +814,15 @@ function addPoints(){
   const entry={player:name,pts,reason,time:Date.now()};
   p.history.push(entry);
   globalHistory.push(entry);
+  saveToStorage(); // auto-save to browser
+  markUnsaved();   // still prompt to save file too
   renderLeaderboard();
   renderHistory();
   renderDetailsTab();
   closeModal('addPoints');
   document.getElementById('modal-pts-input').value='';
   document.getElementById('modal-reason-input').value='';
-  showToast(`✅ +${pts} pts added to ${name}`);
+  showToast(`✅ +${pts} pts added to ${name} — click Save Points to download`);
 }
 
 // ── RESET SEASON ──
@@ -769,6 +830,8 @@ function resetSeason(){
   if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
   players.forEach(p=>{ p.points=0; p.history=[]; });
   globalHistory=[];
+  saveToStorage();
+  markSaved();
   renderLeaderboard();
   renderHistory();
   renderDetailsTab();
@@ -776,7 +839,52 @@ function resetSeason(){
   showToast('Season reset — all points cleared');
 }
 
-// ── EXPORT ──
+// ── SAVE POINTS (explicit admin save) ──
+function savePoints(){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  // 1. Save to localStorage
+  saveToStorage();
+  markSaved();
+  // 2. Also download a .json file as a physical backup
+  const data = JSON.stringify({ players, globalHistory, savedAt: new Date().toISOString() }, null, 2);
+  const a = document.createElement('a');
+  a.href = 'data:application/json,' + encodeURIComponent(data);
+  a.download = 'fifa_data.json';
+  a.click();
+  showToast('✅ Points saved! fifa_data.json downloaded.');
+  // Update save button visual
+  const btn = document.getElementById('save-btn');
+  if(btn){ btn.style.borderColor='var(--green)'; setTimeout(()=>btn.style.borderColor='',2000); }
+}
+
+// ── LOAD FROM FILE ──
+function loadFromFile(event){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.players) throw new Error('Invalid file');
+      players = data.players;
+      globalHistory = data.globalHistory || [];
+      saveToStorage();
+      markSaved();
+      renderLeaderboard();
+      renderHistory();
+      renderDetailsTab();
+      renderAbout();
+      showToast('✅ Data loaded from file!');
+    } catch(err){
+      showToast('❌ Invalid save file', true);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── EXPORT BACKUP ──
 function exportData(){
   if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
   const data=JSON.stringify({players,globalHistory,exportedAt:new Date().toISOString()},null,2);
@@ -784,7 +892,7 @@ function exportData(){
   a.href='data:application/json,'+encodeURIComponent(data);
   a.download='fifa_leaderboard_backup.json';
   a.click();
-  showToast('Data exported');
+  showToast('Backup exported');
 }
 
 // ── HISTORY PAGE ──
@@ -847,6 +955,7 @@ function renderAbout(){
 }
 
 // ── INIT ──
+loadFromStorage(); // restore saved data from browser
 renderLeaderboard();
 renderDetailsTab();
 renderAbout();
