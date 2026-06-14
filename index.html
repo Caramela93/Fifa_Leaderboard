@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FIFA — اتحاد كلية تجارة · Shbab Bla Hadf</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;--navy2:#0f1f3d;--navy3:#162445;
+  --card:#111d36;--card2:#0d1830;--border:#1e3060;
+  --blue:#1a6fe8;--blue2:#1558c0;--gold:#f5a623;
+  --silver:#b0b8c8;--bronze:#cd7f32;--text:#e8edf7;
+  --muted:#8a9ab8;--pts:#4a9eff;--green:#22c55e;
+  --red:#ef4444;--purple:#8b5cf6;--amber:#f59e0b;--teal:#14b8a6;
+}
+html,body{min-height:100%;background:var(--navy);color:var(--text);font-family:'Inter',sans-serif}
+
+/* NAV */
+nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px;position:sticky;top:0;z-index:100}
+.nav-brand .logo{display:flex;align-items:center;gap:8px}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-text .fifa{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.logo-text .tagline{font-size:9px;color:var(--gold);font-style:italic}
+.nav-title{display:flex;flex-direction:column;align-items:center}
+.nav-title .ar{font-family:'Cairo',sans-serif;font-size:20px;font-weight:700;color:#fff;direction:rtl}
+.nav-title .sub{font-size:13px;color:var(--blue);font-weight:500}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn-nav{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-nav:hover{background:var(--navy3);color:var(--text)}
+.btn-nav-blue{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-nav-blue:hover{background:var(--blue2)}
+.user-badge{display:flex;align-items:center;gap:8px;background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px}
+.user-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.user-badge .role-admin{color:var(--gold);font-weight:600}
+.user-badge .role-user{color:var(--blue);font-weight:600}
+.btn-logout{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:color .2s}
+.btn-logout:hover{color:var(--red)}
+
+/* TABS */
+.tabs{background:var(--navy2);border-bottom:1px solid var(--border)}
+.tabs-inner{max-width:1100px;margin:0 auto;padding:0 2rem;display:flex}
+.tab{display:flex;align-items:center;gap:7px;padding:14px 24px;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab:hover:not(.active){color:var(--text)}
+.tab svg{width:16px;height:16px;opacity:.75}
+.tab-locked{opacity:.4;cursor:not-allowed}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* MAIN LAYOUT */
+.main{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-header .accent{width:4px;height:20px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.card-header h2{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+thead th{padding:10px 20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:left}
+thead th.right{text-align:right}
+tbody tr{border-bottom:1px solid rgba(30,48,96,.5);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(26,111,232,.06)}
+tbody td{padding:14px 20px;font-size:14px}
+.rank-cell{width:56px}
+.rank-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--card2);color:var(--muted);border:1px solid var(--border)}
+.rank-badge.gold{background:rgba(245,166,35,.15);color:var(--gold);border-color:rgba(245,166,35,.4)}
+.rank-badge.silver{background:rgba(176,184,200,.12);color:var(--silver);border-color:rgba(176,184,200,.35)}
+.rank-badge.bronze{background:rgba(205,127,50,.12);color:var(--bronze);border-color:rgba(205,127,50,.35)}
+.player-name{font-size:15px;font-weight:500;color:var(--text)}
+.pts-cell{font-size:18px;font-weight:700;color:var(--pts);text-align:right}
+.action-cell{text-align:right}
+.btn-view{background:var(--blue);color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s}
+.btn-view:hover{background:var(--blue2)}
+.btn-view svg{width:14px;height:14px}
+
+/* ADMIN PANEL */
+.admin-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.admin-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.admin-header h3{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.admin-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.btn-big{border:none;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+.btn-big-blue{background:var(--blue);color:#fff}
+.btn-big-blue:hover{background:var(--blue2)}
+.admin-hint{font-size:12px;color:var(--muted);line-height:1.6}
+.admin-actions{display:flex;flex-direction:column;gap:10px}
+.admin-action{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:background .2s;background:none;width:100%;text-align:left}
+.admin-action:hover{background:rgba(255,255,255,.04)}
+.action-icon{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.action-icon svg{width:18px;height:18px}
+.action-icon.green{background:rgba(34,197,94,.15);color:var(--green)}
+.action-icon.red{background:rgba(239,68,68,.15);color:var(--red)}
+.action-icon.purple{background:rgba(139,92,246,.15);color:var(--purple)}
+.action-icon.amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.action-text{display:flex;flex-direction:column;gap:3px}
+.action-label{font-size:13px;font-weight:600;color:var(--text)}
+.action-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* LOCKED PANEL */
+.locked-panel{padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.lock-icon{width:48px;height:48px;background:rgba(138,154,184,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+
+/* POINTS SYSTEM */
+.points-section{max-width:1100px;margin:0 auto;padding:0 2rem 2rem}
+.points-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.point-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.point-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.point-icon svg{width:18px;height:18px}
+.point-icon.green{background:rgba(34,197,94,.15);color:var(--green)}
+.point-icon.blue{background:rgba(26,111,232,.15);color:#4a9eff}
+.point-icon.teal{background:rgba(20,184,166,.15);color:var(--teal)}
+.point-icon.purple{background:rgba(139,92,246,.15);color:var(--purple)}
+.point-icon.red{background:rgba(239,68,68,.15);color:var(--red)}
+.point-icon.amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.point-icon.orange{background:rgba(234,88,12,.15);color:#fb923c}
+.point-icon.indigo{background:rgba(99,102,241,.15);color:#818cf8}
+.point-icon.gold{background:rgba(245,166,35,.15);color:var(--gold)}
+.point-info{flex:1}
+.point-name{font-size:12px;font-weight:600;color:var(--text)}
+.point-sub{font-size:10px;color:var(--muted)}
+.point-pts{font-size:16px;font-weight:800;white-space:nowrap}
+.point-pts.green{color:var(--green)}
+.point-pts.blue{color:#4a9eff}
+.point-pts.gold{color:var(--gold)}
+.point-pts.red-c{color:var(--red)}
+
+/* HISTORY PAGE */
+.history-page{max-width:1100px;margin:0 auto;padding:2rem}
+.history-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;text-align:center}
+.history-log{display:flex;flex-direction:column;gap:10px}
+.log-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px}
+.log-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:4px}
+.log-dot.reset{background:var(--red)}
+.log-body{flex:1}
+.log-title{font-size:14px;font-weight:600;color:var(--text)}
+.log-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.log-pts{font-size:15px;font-weight:700;color:var(--green);white-space:nowrap}
+.log-empty{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+
+/* ABOUT PAGE */
+.about-page{max-width:700px;margin:0 auto;padding:2rem}
+.about-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px}
+.about-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.about-sub{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:20px}
+.about-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.about-section h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
+
+/* FOOTER */
+footer{background:var(--navy2);border-top:1px solid var(--border);padding:2.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
+.footer-players{position:absolute;bottom:0;display:flex;justify-content:space-between;width:100%;pointer-events:none}
+.footer-player{opacity:.18}
+.footer-logo{font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px}
+.footer-name{font-family:'Cairo',sans-serif;direction:rtl;font-size:15px;color:var(--gold);font-weight:600}
+.footer-sub{font-family:'Cairo',sans-serif;direction:rtl;font-size:12px;color:var(--muted)}
+
+/* MODALS */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:420px;max-width:95vw;overflow:hidden}
+.modal-wide{width:560px}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px}
+.modal-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.modal-field input,.modal-field select{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--blue)}
+.modal-field select option{background:var(--navy2)}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{background:var(--navy3);color:var(--text)}
+.btn-confirm{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-confirm:hover{background:var(--blue2)}
+.btn-confirm.danger{background:var(--red)}
+.btn-confirm.danger:hover{background:#c53030}
+.error-msg{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);display:none}
+
+/* LOGIN TABS */
+.login-tabs{display:flex;border-bottom:1px solid var(--border);margin:-20px -20px 20px}
+.login-tab{flex:1;padding:12px;font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;color:var(--muted);border-bottom:2px solid transparent;font-family:inherit;transition:all .2s}
+.login-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(26,111,232,.06)}
+
+/* DETAIL MODAL */
+.detail-header{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.detail-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
+.detail-name{font-size:18px;font-weight:700}
+.detail-total{font-size:13px;color:var(--muted)}
+.detail-log{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
+.detail-log::-webkit-scrollbar{width:4px}
+.detail-log::-webkit-scrollbar-track{background:var(--navy2)}
+.detail-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.detail-entry{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--navy3);border-radius:8px;border:1px solid var(--border)}
+.detail-entry-icon{width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.15);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.detail-entry-icon svg{width:14px;height:14px}
+.detail-entry-body{flex:1}
+.detail-entry-reason{font-size:13px;font-weight:500;color:var(--text)}
+.detail-entry-time{font-size:11px;color:var(--muted);margin-top:2px}
+.detail-entry-pts{font-size:14px;font-weight:700;color:var(--green);white-space:nowrap}
+.detail-empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy2);border:1px solid var(--green);border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--green);z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+@media(max-width:760px){
+  .main{grid-template-columns:1fr}
+  .points-grid{grid-template-columns:repeat(2,1fr)}
+  nav{padding:0 1rem}
+  .nav-title{display:none}
+  .main,.points-section,.history-page,.about-page{padding:1rem}
+  .tabs-inner{overflow-x:auto}
+  .tab{padding:12px 16px;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="logo">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="20" fill="#f5a623" stroke="#e09010" stroke-width="1.5"/>
+        <polygon points="22,10 26,18 22,14 18,18" fill="#222" opacity=".8"/>
+        <polygon points="22,34 26,26 22,30 18,26" fill="#222" opacity=".8"/>
+        <polygon points="10,22 18,18 14,22 18,26" fill="#222" opacity=".8"/>
+        <polygon points="34,22 26,18 30,22 26,26" fill="#222" opacity=".8"/>
+        <circle cx="22" cy="22" r="5" fill="#111" opacity=".7"/>
+      </svg>
+      <div class="logo-text">
+        <span class="fifa">FIFA</span>
+        <span class="tagline">For the Game. For the World.</span>
+      </div>
+    </div>
+  </div>
+  <div class="nav-title">
+    <span class="ar">اتحاد كلية تجارة</span>
+    <span class="sub">– Shbab Bla Hadf</span>
+  </div>
+  <div class="nav-actions" id="nav-actions">
+    <button class="btn-nav" onclick="openModal('login')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Admin
+    </button>
+    <button class="btn-nav-blue" onclick="openModal('login')">Login</button>
+  </div>
+</nav>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" onclick="switchPage('leaderboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Leaderboard
+    </button>
+    <button class="tab" onclick="switchPage('details-tab',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Details
+    </button>
+    <button class="tab" id="history-tab-btn" onclick="handleHistoryTab(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+      History
+    </button>
+    <button class="tab" onclick="switchPage('about',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      About
+    </button>
+  </div>
+</div>
+
+<!-- PAGE: LEADERBOARD -->
+<div class="page active" id="page-leaderboard">
+  <div class="main">
+    <!-- Leaderboard table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="accent"></div>
+        <h2>Leaderboard</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:56px">#</th>
+            <th>Player</th>
+            <th class="right" style="width:100px">Points</th>
+            <th class="right" style="width:145px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Admin sidebar -->
+    <div class="admin-card" id="admin-sidebar">
+      <div class="admin-header">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <h3>Admin Panel</h3>
+      </div>
+      <!-- Logged-out state -->
+      <div class="admin-body" id="admin-locked">
+        <button class="btn-big btn-big-blue" onclick="openModal('login')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Login
+        </button>
+        <p class="admin-hint">Login as admin to add prediction points and manage the system.</p>
+        <div class="admin-actions">
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
+            <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
+            <div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Add prediction points for any player</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
+            <div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
+            <div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
+            <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <div class="action-text"><span class="action-label">Export Data</span><span class="action-desc">Download data backup (JSON)</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:10px;opacity:.4">
+            <div class="action-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
+            <div class="action-text"><span class="action-label">History</span><span class="action-desc">View all changes and logs</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Admin logged-in state -->
+      <div class="admin-body" id="admin-unlocked" style="display:none">
+        <div style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--gold)">Admin Access</div>
+            <div style="font-size:11px;color:var(--muted)">Full control enabled</div>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button class="admin-action" onclick="openModal('addPoints')">
+            <div class="action-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
+            <div class="action-text"><span class="action-label">Add Points</span><span class="action-desc">Add prediction points for any player</span></div>
+          </button>
+          <button class="admin-action" onclick="openModal('resetSeason')">
+            <div class="action-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
+            <div class="action-text"><span class="action-label">Reset Season</span><span class="action-desc">Reset all points and start a new season</span></div>
+          </button>
+          <button class="admin-action" onclick="exportData()">
+            <div class="action-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <div class="action-text"><span class="action-label">Export Data</span><span class="action-desc">Download data backup (JSON)</span></div>
+          </button>
+          <button class="admin-action" onclick="switchPage('history',document.getElementById('history-tab-btn'))">
+            <div class="action-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></div>
+            <div class="action-text"><span class="action-label">History</span><span class="action-desc">View all changes and logs</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POINTS SYSTEM -->
+  <div class="points-section">
+    <div class="card" style="padding:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="width:4px;height:20px;background:var(--blue);border-radius:2px;flex-shrink:0"></div>
+        <h2 style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Points System</h2>
+      </div>
+      <div class="points-grid">
+        <div class="point-item"><div class="point-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div><div class="point-info"><div class="point-name">Correct Outcome</div><div class="point-sub">Home / Draw / Away</div></div><span class="point-pts green">10 pts</span></div>
+        <div class="point-item"><div class="point-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l4-4 4 4 4-4 4 4"/><path d="M3 15l4-4 4 4 4-4 4 4"/></svg></div><div class="point-info"><div class="point-name">Correct Home Goals</div></div><span class="point-pts blue">5 pts</span></div>
+        <div class="point-item"><div class="point-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/></svg></div><div class="point-info"><div class="point-name">Correct Away Goals</div></div><span class="point-pts blue">5 pts</span></div>
+        <div class="point-item"><div class="point-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="point-info"><div class="point-name">Correct Goal Difference</div></div><span class="point-pts blue">5 pts</span></div>
+        <div class="point-item"><div class="point-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="point-info"><div class="point-name">Correct Final Score</div></div><span class="point-pts blue">5 pts</span></div>
+        <div class="point-item"><div class="point-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="point-info"><div class="point-name">Risky Prediction Bonus</div><div class="point-sub">&lt; 20% same outcome</div></div><span class="point-pts red-c">10 pts</span></div>
+        <div class="point-item"><div class="point-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div><div class="point-info"><div class="point-name">Round Bonus</div><div class="point-sub">All outcomes correct</div></div><span class="point-pts gold">20 pts</span></div>
+        <div class="point-item"><div class="point-icon indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8l.01 0"/><path d="M11 12h1v4h1"/></svg></div><div class="point-info"><div class="point-name">First Team to Score</div></div><span class="point-pts blue">5 pts</span></div>
+        <div class="point-item"><div class="point-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21v-2a6.5 6.5 0 0113 0v2"/></svg></div><div class="point-info"><div class="point-name">First Player to Score</div></div><span class="point-pts green">10 pts</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: DETAILS TAB -->
+<div class="page" id="page-details-tab">
+  <div style="max-width:1100px;margin:0 auto;padding:2rem">
+    <div class="card">
+      <div class="card-header"><div class="accent"></div><h2>Player Details</h2></div>
+      <div id="details-tab-body" style="padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: HISTORY -->
+<div class="page" id="page-history">
+  <div class="history-page">
+    <div id="history-locked-view" class="history-locked">
+      <div class="lock-icon" style="width:64px;height:64px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <div style="font-size:16px;font-weight:600">History is Admin Only</div>
+      <div style="font-size:13px;color:var(--muted);max-width:280px">Please login as admin to view the full history of points and changes.</div>
+      <button class="btn-nav-blue" onclick="openModal('login')" style="padding:10px 24px;font-size:14px">Login as Admin</button>
+    </div>
+    <div id="history-admin-view" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="width:4px;height:20px;background:var(--blue);border-radius:2px;flex-shrink:0"></div>
+        <h2 style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text)">Full History Log</h2>
+        <span style="margin-left:auto;font-size:12px;color:var(--muted)" id="history-count"></span>
+      </div>
+      <div class="history-log" id="history-log"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ABOUT -->
+<div class="page" id="page-about">
+  <div class="about-page">
+    <div class="about-card">
+      <div class="about-title">اتحاد كلية تجارة</div>
+      <div style="font-size:16px;color:var(--blue);font-weight:600;margin-bottom:10px">Shbab Bla Hadf — Prediction League</div>
+      <div class="about-sub">A FIFA prediction competition among friends. Earn points by correctly predicting match outcomes, scores, and goalscorers across rounds.</div>
+      <div class="about-section">
+        <h4>Players</h4>
+        <div id="about-players" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <div class="about-section">
+        <h4>Built by</h4>
+        <div style="font-family:'Cairo',sans-serif;direction:rtl;font-size:15px;color:var(--gold)">احمد الديسوقى &lt;/&gt;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-players">
+    <svg class="footer-player" width="90" height="110" viewBox="0 0 90 110" fill="none"><ellipse cx="45" cy="100" rx="30" ry="8" fill="#1a6fe8" opacity=".3"/><path d="M20 80 Q30 50 45 30 Q60 50 70 80" stroke="#1a6fe8" stroke-width="3" fill="none"/><circle cx="45" cy="22" r="10" fill="#1a6fe8" opacity=".6"/><path d="M30 60 L20 85M60 60 L70 85" stroke="#1a6fe8" stroke-width="3"/></svg>
+    <svg class="footer-player" width="90" height="110" viewBox="0 0 90 110" fill="none" style="transform:scaleX(-1)"><ellipse cx="45" cy="100" rx="30" ry="8" fill="#1a6fe8" opacity=".3"/><path d="M20 80 Q30 50 45 30 Q60 50 70 80" stroke="#1a6fe8" stroke-width="3" fill="none"/><circle cx="45" cy="22" r="10" fill="#1a6fe8" opacity=".6"/><path d="M30 60 L20 85M60 60 L70 85" stroke="#1a6fe8" stroke-width="3"/></svg>
+  </div>
+  <div class="footer-logo">FIFA</div>
+  <div class="footer-name">Shbab Bla Hadf — اتحاد كلية تجارة</div>
+  <div class="footer-sub">كودد بى احمد الديسوقى &lt;/&gt;</div>
+</footer>
+
+<!-- ===== MODALS ===== -->
+
+<!-- LOGIN MODAL -->
+<div class="modal-backdrop" id="modal-login">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="login-modal-title">Login</h3>
+      <button class="modal-close" onclick="closeModal('login')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="login-tabs">
+        <button class="login-tab active" id="ltab-admin" onclick="switchLoginTab('admin')">🔐 Admin</button>
+        <button class="login-tab" id="ltab-user" onclick="switchLoginTab('user')">👤 Player Login</button>
+      </div>
+      <div id="login-error" class="error-msg">Incorrect username or password.</div>
+      <div class="modal-field"><label id="login-user-label">Admin Username</label><input type="text" id="login-username" placeholder="Enter username" autocomplete="off"/></div>
+      <div class="modal-field"><label>Password</label><input type="password" id="login-password" placeholder="Enter password"/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('login')">Cancel</button>
+      <button class="btn-confirm" onclick="doLogin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD POINTS MODAL -->
+<div class="modal-backdrop" id="modal-addPoints">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add Points</h3>
+      <button class="modal-close" onclick="closeModal('addPoints')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label>Player</label>
+        <select id="modal-player-select">
+          <option>Ahmed</option><option>Omar</option><option>Belal</option>
+          <option>Vini</option><option>Body</option><option>Migo</option><option>Mo</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>Points to Add</label><input type="number" id="modal-pts-input" placeholder="e.g. 10" min="1"/></div>
+      <div class="modal-field"><label>Reason</label><input type="text" id="modal-reason-input" placeholder="e.g. Correct final score — Brazil 2-1 France"/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('addPoints')">Cancel</button>
+      <button class="btn-confirm" onclick="addPoints()">Add Points</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET SEASON MODAL -->
+<div class="modal-backdrop" id="modal-resetSeason">
+  <div class="modal">
+    <div class="modal-head"><h3>Reset Season</h3><button class="modal-close" onclick="closeModal('resetSeason')">&times;</button></div>
+    <div class="modal-body"><p style="font-size:14px;color:var(--muted);line-height:1.7">This will reset all player points to 0 and start a new season. All history will be cleared. This action cannot be undone.</p></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('resetSeason')">Cancel</button>
+      <button class="btn-confirm danger" onclick="resetSeason()">Reset All Points</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW DETAILS MODAL -->
+<div class="modal-backdrop" id="modal-viewDetails">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h3>Player Details</h3>
+      <button class="modal-close" onclick="closeModal('viewDetails')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-header" id="detail-header"></div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Points History</div>
+      <div class="detail-log" id="detail-log"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-cancel" onclick="closeModal('viewDetails')">Close</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+const ADMIN_CREDS = { username: 'Ahmed', password: 'AdminAhmed' };
+
+const PLAYER_COLORS = {
+  Ahmed:'#1a6fe8', Omar:'#22c55e', Belal:'#f5a623',
+  Vini:'#8b5cf6', Body:'#ef4444', Migo:'#14b8a6', Mo:'#f59e0b'
+};
+
+let currentUser = null; // null | { name, role: 'admin'|'user' }
+let loginMode = 'admin';
+
+let players = [
+  { name:'Ahmed', points:0, history:[] },
+  { name:'Omar',  points:0, history:[] },
+  { name:'Belal', points:0, history:[] },
+  { name:'Vini',  points:0, history:[] },
+  { name:'Body',  points:0, history:[] },
+  { name:'Migo',  points:0, history:[] },
+  { name:'Mo',    points:0, history:[] },
+];
+
+let globalHistory = []; // { player, pts, reason, time }
+
+// ── UTILS ──
+function formatTime(ts){
+  const d=new Date(ts);
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
+    +' · '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function showToast(msg, isError=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(isError?' error':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── PAGES ──
+function switchPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='details-tab') renderDetailsTab();
+  if(id==='history') renderHistory();
+  if(id==='about') renderAbout();
+}
+
+function handleHistoryTab(el){
+  if(!currentUser || currentUser.role!=='admin'){
+    switchPage('history', el);
+    return;
+  }
+  switchPage('history', el);
+}
+
+// ── AUTH ──
+function switchLoginTab(mode){
+  loginMode=mode;
+  document.getElementById('ltab-admin').classList.toggle('active', mode==='admin');
+  document.getElementById('ltab-user').classList.toggle('active', mode==='user');
+  document.getElementById('login-user-label').textContent = mode==='admin' ? 'Admin Username' : 'Your Name (select)';
+  document.getElementById('login-username').placeholder = mode==='admin' ? 'Enter admin username' : 'Your player name';
+  document.getElementById('login-error').style.display='none';
+  if(mode==='user'){
+    // replace text input with select for user mode
+    const inp=document.getElementById('login-username');
+    inp.value='';
+    inp.placeholder='Enter your player name';
+  }
+}
+
+function doLogin(){
+  const username=document.getElementById('login-username').value.trim();
+  const password=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error');
+  errEl.style.display='none';
+
+  if(loginMode==='admin'){
+    if(username===ADMIN_CREDS.username && password===ADMIN_CREDS.password){
+      currentUser={name:'Ahmed',role:'admin'};
+      applyAuthState();
+      closeModal('login');
+      showToast('✅ Logged in as Admin');
+      document.getElementById('login-username').value='';
+      document.getElementById('login-password').value='';
+    } else {
+      errEl.style.display='block';
+    }
+  } else {
+    // User login: just needs a valid player name + any password (for demo)
+    const p=players.find(x=>x.name.toLowerCase()===username.toLowerCase());
+    if(p && password.length>0){
+      currentUser={name:p.name,role:'user'};
+      applyAuthState();
+      closeModal('login');
+      showToast('✅ Logged in as '+p.name);
+      document.getElementById('login-username').value='';
+      document.getElementById('login-password').value='';
+    } else {
+      errEl.textContent = p ? 'Please enter a password.' : 'Player not found. Check your name.';
+      errEl.style.display='block';
+    }
+  }
+}
+
+function logout(){
+  currentUser=null;
+  applyAuthState();
+  showToast('Logged out');
+}
+
+function applyAuthState(){
+  const na=document.getElementById('nav-actions');
+  if(!currentUser){
+    na.innerHTML=`
+      <button class="btn-nav" onclick="openModal('login')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Admin
+      </button>
+      <button class="btn-nav-blue" onclick="openModal('login')">Login</button>`;
+    document.getElementById('admin-locked').style.display='flex';
+    document.getElementById('admin-unlocked').style.display='none';
+  } else {
+    const roleLabel = currentUser.role==='admin'
+      ? `<span class="role-admin">⭐ Admin</span>`
+      : `<span class="role-user">${currentUser.name}</span>`;
+    na.innerHTML=`
+      <div class="user-badge"><div class="dot"></div>${roleLabel}<button class="btn-logout" onclick="logout()">Logout</button></div>`;
+    if(currentUser.role==='admin'){
+      document.getElementById('admin-locked').style.display='none';
+      document.getElementById('admin-unlocked').style.display='flex';
+    } else {
+      document.getElementById('admin-locked').style.display='flex';
+      document.getElementById('admin-unlocked').style.display='none';
+    }
+  }
+  renderHistory();
+  renderLeaderboard();
+}
+
+// ── LOGIN MODAL ──
+function openModal(id){ document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-backdrop').forEach(el=>{
+  el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('open'); });
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    if(document.getElementById('modal-login').classList.contains('open')) doLogin();
+    if(document.getElementById('modal-addPoints').classList.contains('open')) addPoints();
+  }
+});
+
+// ── LEADERBOARD ──
+function rankClass(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; }
+function rankEmoji(i){ return i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1); }
+
+function renderLeaderboard(){
+  const sorted=[...players].sort((a,b)=>b.points-a.points);
+  document.getElementById('leaderboard-body').innerHTML=sorted.map((p,i)=>{
+    const rc=rankClass(i);
+    const badge=i<3
+      ?`<span style="font-size:20px">${rankEmoji(i)}</span>`
+      :`<span>${i+1}</span>`;
+    return `<tr>
+      <td class="rank-cell" style="padding:14px 10px 14px 20px">
+        <div class="rank-badge ${rc}">${badge}</div>
+      </td>
+      <td class="player-name">${p.name}</td>
+      <td class="pts-cell">${p.points}</td>
+      <td class="action-cell">
+        <button class="btn-view" onclick="openDetails('${p.name}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          View Details
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── VIEW DETAILS ──
+function openDetails(name){
+  const p=players.find(x=>x.name===name);
+  if(!p) return;
+  const color=PLAYER_COLORS[name]||'#1a6fe8';
+  const initials=name.substring(0,2).toUpperCase();
+  document.getElementById('detail-header').innerHTML=`
+    <div class="detail-avatar" style="background:${color}22;color:${color};border:2px solid ${color}44">${initials}</div>
+    <div>
+      <div class="detail-name">${name}</div>
+      <div class="detail-total" style="color:${color}">Total Points: <strong>${p.points}</strong></div>
+    </div>`;
+  const log=document.getElementById('detail-log');
+  if(!p.history.length){
+    log.innerHTML='<div class="detail-empty">No points recorded yet for '+name+'.</div>';
+  } else {
+    log.innerHTML=[...p.history].reverse().map(h=>`
+      <div class="detail-entry">
+        <div class="detail-entry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        </div>
+        <div class="detail-entry-body">
+          <div class="detail-entry-reason">${h.reason||'Points added by admin'}</div>
+          <div class="detail-entry-time">${formatTime(h.time)}</div>
+        </div>
+        <div class="detail-entry-pts">+${h.pts} pts</div>
+      </div>`).join('');
+  }
+  openModal('viewDetails');
+}
+
+// ── ADD POINTS ──
+function addPoints(){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  const name=document.getElementById('modal-player-select').value;
+  const pts=parseInt(document.getElementById('modal-pts-input').value)||0;
+  const reason=document.getElementById('modal-reason-input').value.trim()||'Points added by admin';
+  if(pts<=0){ showToast('Enter a valid point value',true); return; }
+  const p=players.find(x=>x.name===name);
+  if(!p) return;
+  p.points+=pts;
+  const entry={player:name,pts,reason,time:Date.now()};
+  p.history.push(entry);
+  globalHistory.push(entry);
+  renderLeaderboard();
+  renderHistory();
+  renderDetailsTab();
+  closeModal('addPoints');
+  document.getElementById('modal-pts-input').value='';
+  document.getElementById('modal-reason-input').value='';
+  showToast(`✅ +${pts} pts added to ${name}`);
+}
+
+// ── RESET SEASON ──
+function resetSeason(){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  players.forEach(p=>{ p.points=0; p.history=[]; });
+  globalHistory=[];
+  renderLeaderboard();
+  renderHistory();
+  renderDetailsTab();
+  closeModal('resetSeason');
+  showToast('Season reset — all points cleared');
+}
+
+// ── EXPORT ──
+function exportData(){
+  if(!currentUser || currentUser.role!=='admin'){ showToast('Admin only',true); return; }
+  const data=JSON.stringify({players,globalHistory,exportedAt:new Date().toISOString()},null,2);
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(data);
+  a.download='fifa_leaderboard_backup.json';
+  a.click();
+  showToast('Data exported');
+}
+
+// ── HISTORY PAGE ──
+function renderHistory(){
+  const locked=document.getElementById('history-locked-view');
+  const adminV=document.getElementById('history-admin-view');
+  if(!currentUser || currentUser.role!=='admin'){
+    locked.style.display='flex'; adminV.style.display='none'; return;
+  }
+  locked.style.display='none'; adminV.style.display='block';
+  const log=document.getElementById('history-log');
+  document.getElementById('history-count').textContent=globalHistory.length+' entries';
+  if(!globalHistory.length){
+    log.innerHTML='<div class="log-empty">No history yet. Add points to see changes here.</div>'; return;
+  }
+  log.innerHTML=[...globalHistory].reverse().map(h=>`
+    <div class="log-item">
+      <div class="log-dot"></div>
+      <div class="log-body">
+        <div class="log-title"><strong>${h.player}</strong> — ${h.reason}</div>
+        <div class="log-meta">${formatTime(h.time)}</div>
+      </div>
+      <div class="log-pts">+${h.pts} pts</div>
+    </div>`).join('');
+}
+
+// ── DETAILS TAB ──
+function renderDetailsTab(){
+  const body=document.getElementById('details-tab-body');
+  const sorted=[...players].sort((a,b)=>b.points-a.points);
+  body.innerHTML=sorted.map((p,i)=>{
+    const color=PLAYER_COLORS[p.name]||'#1a6fe8';
+    const initials=p.name.substring(0,2).toUpperCase();
+    const rc=rankClass(i);
+    const medal=i<3?rankEmoji(i):'';
+    const lastEntry=p.history.length?p.history[p.history.length-1]:null;
+    return `<div style="background:var(--navy3);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .2s" onclick="openDetails('${p.name}')" onmouseover="this.style.borderColor='${color}55'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:42px;height:42px;border-radius:50%;background:${color}22;color:${color};border:2px solid ${color}44;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">${initials}</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">${p.name} ${medal}</div>
+          <div style="font-size:11px;color:var(--muted)">${p.history.length} point event${p.history.length!==1?'s':''}</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:22px;font-weight:800;color:${color}">${p.points}</span>
+        <span style="font-size:11px;color:var(--muted)">pts</span>
+      </div>
+      ${lastEntry?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)">Last: ${lastEntry.reason.substring(0,40)}${lastEntry.reason.length>40?'…':''}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── ABOUT ──
+function renderAbout(){
+  document.getElementById('about-players').innerHTML=players.map(p=>{
+    const color=PLAYER_COLORS[p.name]||'#1a6fe8';
+    return `<div style="background:${color}18;color:${color};border:1px solid ${color}33;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600">${p.name}</div>`;
+  }).join('');
+}
+
+// ── INIT ──
+renderLeaderboard();
+renderDetailsTab();
+renderAbout();
+</script>
+</body>
+</html>

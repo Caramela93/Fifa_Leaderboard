@@ -1,0 +1,13 @@
+{
+  "players": [
+    { "name": "Ahmed", "points": 0, "history": [] },
+    { "name": "Omar",  "points": 0, "history": [] },
+    { "name": "Belal", "points": 0, "history": [] },
+    { "name": "Vini",  "points": 0, "history": [] },
+    { "name": "Body",  "points": 0, "history": [] },
+    { "name": "Migo",  "points": 0, "history": [] },
+    { "name": "Mo",    "points": 0, "history": [] }
+  ],
+  "globalHistory": [],
+  "savedAt": "2026-01-01T00:00:00.000Z"
+}
