@@ -1,13 +1,133 @@
 {
   "players": [
-    { "name": "Ahmed", "points": 0, "history": [] },
-    { "name": "Omar",  "points": 0, "history": [] },
-    { "name": "Belal", "points": 0, "history": [] },
-    { "name": "Vini",  "points": 0, "history": [] },
-    { "name": "Body",  "points": 0, "history": [] },
-    { "name": "Migo",  "points": 0, "history": [] },
-    { "name": "Mo",    "points": 0, "history": [] }
+    {
+      "name": "Ahmed",
+      "points": 10,
+      "history": [
+        {
+          "player": "Ahmed",
+          "pts": 10,
+          "reason": "For The site",
+          "time": 1781399715236
+        }
+      ]
+    },
+    {
+      "name": "Omar",
+      "points": 15,
+      "history": [
+        {
+          "player": "Omar",
+          "pts": 15,
+          "reason": "Starter",
+          "time": 1781399724142
+        }
+      ]
+    },
+    {
+      "name": "Belal",
+      "points": 10,
+      "history": [
+        {
+          "player": "Belal",
+          "pts": 10,
+          "reason": "Starter",
+          "time": 1781399731972
+        }
+      ]
+    },
+    {
+      "name": "Vini",
+      "points": 40,
+      "history": [
+        {
+          "player": "Vini",
+          "pts": 40,
+          "reason": "Starter",
+          "time": 1781399827493
+        }
+      ]
+    },
+    {
+      "name": "Body",
+      "points": 15,
+      "history": [
+        {
+          "player": "Body",
+          "pts": 15,
+          "reason": "Starter",
+          "time": 1781399856854
+        }
+      ]
+    },
+    {
+      "name": "Migo",
+      "points": 30,
+      "history": [
+        {
+          "player": "Migo",
+          "pts": 30,
+          "reason": "Starter",
+          "time": 1781399839556
+        }
+      ]
+    },
+    {
+      "name": "Mo",
+      "points": 40,
+      "history": [
+        {
+          "player": "Mo",
+          "pts": 40,
+          "reason": "Starter",
+          "time": 1781399834135
+        }
+      ]
+    }
   ],
-  "globalHistory": [],
-  "savedAt": "2026-01-01T00:00:00.000Z"
+  "globalHistory": [
+    {
+      "player": "Ahmed",
+      "pts": 10,
+      "reason": "For The site",
+      "time": 1781399715236
+    },
+    {
+      "player": "Omar",
+      "pts": 15,
+      "reason": "Starter",
+      "time": 1781399724142
+    },
+    {
+      "player": "Belal",
+      "pts": 10,
+      "reason": "Starter",
+      "time": 1781399731972
+    },
+    {
+      "player": "Vini",
+      "pts": 40,
+      "reason": "Starter",
+      "time": 1781399827493
+    },
+    {
+      "player": "Mo",
+      "pts": 40,
+      "reason": "Starter",
+      "time": 1781399834135
+    },
+    {
+      "player": "Migo",
+      "pts": 30,
+      "reason": "Starter",
+      "time": 1781399839556
+    },
+    {
+      "player": "Body",
+      "pts": 15,
+      "reason": "Starter",
+      "time": 1781399856854
+    }
+  ],
+  "savedAt": "2026-06-14T01:17:40.858Z"
 }
